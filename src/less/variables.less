@@ -1,0 +1,107 @@
+//
+// Variables
+// --------------------------------------------------
+
+// Type
+// --------------------------------------------------
+@font-family-default: "Helvetica Neue", Helvetica, sans-serif;
+@font-size-default: 0.85rem;
+@font-weight: 500;
+@font-weight-light: 400;
+@line-height-default: 1.05rem;
+
+
+//img
+@imgBaseUrl: "../img";
+
+// Colors
+// --------------------------------------------------
+
+
+// 主色
+@color-primary: #0894ec;
+@color-danger: #f6383a;
+@color-warning: #f60;
+@color-success: #4cd964;
+
+@color-primary-active: #0a8ddf;
+@color-danger-active: darken(@color-danger, 10%);
+@color-warning-active: darken(@color-warning, 10%);
+@color-success-active: darken(@color-success, 10%);
+
+// font color
+@globalLinkColor: #61749B;
+@globalDescColor: #B2B2B2;
+@globalWarnColor: #E64340;
+@globalNickNameColor: #576B95;
+@globalTextColor: #888;
+@globalTitleColor: #000;
+
+@color-split: #e7e7e7;  //分割线的颜色
+@color-bg: #eee;
+@color-text: #3d4145; //文案色
+@color-text-secondary: #5f646e; //次级文案
+@color-text-gray: #999; //灰色文案
+@color-text-gray-light: #ccc; //更灰色文案
+
+//链接色
+@color-link: @color-primary; //链接色有可能不同于主色
+@color-link-active: @color-primary-active; //链接色有可能不同于主色
+
+// Bars
+// --------------------------------------------------
+
+@bar-base-height:  2.2rem;
+@bar-tab-height:   2.5rem;
+@bar-side-spacing: 0.5rem;
+
+
+// Cards
+// --------------------------------------------------
+
+@card-bg: #fff;
+
+
+// Buttons
+// --------------------------------------------------
+
+@button-font-size: 0.6rem;
+
+
+// Transitions
+// --------------------------------------------------
+
+@timing-fuction: cubic-bezier(.1,.5,.1,1); // Inspired by @c2prods
+
+
+// Borders
+// --------------------------------------------------
+
+@border-default-width: 1px;
+@border-default-color: @color-split;
+@border-default: @border-default-width solid @border-default-color;
+@border-radius: 0.3rem;
+
+// from weui
+// --------------------------------------------------
+
+@weuiCellBg:#FFFFFF;
+@weuiCellBorderColor:#D9D9D9;
+@weuiCellGapV:10px;
+@weuiCellGapH:15px;
+@weuiCellInnerGapH:.35em;
+@weuiCellHeight: 44px;
+@weuiCellFontSize:17px;
+@weuiCellTipsFontSize:14px;
+@weuiCellLabelWidth:105px;
+
+@weuiCellLineHeight: unit((@weuiCellHeight - 2 * @weuiCellGapV) / @weuiCellFontSize); // 高度为44px，减去上下padding的行高
+@weuiCellsMarginTop:unit(20 / @weuiCellFontSize, em);
+
+@weuiGridBorderColor:#D9D9D9;
+@weuiGridFontSize: 14px;
+@weuiGridIconSize: 28px;
+@weuiGridColumnCount: 3;
+//component
+@itemActiveColor: #E4E4E4;
+@globalTitleColor: #000;
