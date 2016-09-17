@@ -14,6 +14,7 @@
   var Knife = (function () {
     // 函数内私有变量及函数
     var $,
+      emptyArray = [],
       classCache = {},
       idCache = {},
       readyRE = /complete|loaded|interactive/,
@@ -55,6 +56,7 @@
       // document ready when it hasn't yet created the body element
       if (readyRE.test(document.readyState) && document.body) callback()
       else document.addEventListener('DOMContentLoaded', function () {
+        document.removeEventListener('DOMContentLoaded', arguments.callee, false)
         callback()
       }, false)
     }
@@ -68,7 +70,7 @@
         this.length = 0;
     }
 
-    // `$.knife.Z` swaps out the prototype of the given `dom` array
+    // `$.knife.K` swaps out the prototype of the given `dom` array
     // of nodes with `$.fn` and thus supplying all the Knife functions
     // to the array. This method can be overridden in plugins.
     knife.K = function (dom, sel) {
@@ -96,7 +98,7 @@
     knife.init = function (sel, root) {
       let dom;
       // If nothing given, return an empty Zepto collection
-      if (!sel) return knife.Z()
+      if (!sel) return knife.K()
       // Optimize for string selectors
       if (typeof sel === 'string') {
         if (sel[0] === '#')
@@ -170,12 +172,28 @@
       return str == null ? '' : String.prototype.trim.call(str)
     }
 
+    /**
+     * 判断浏览器是否支持 sessionStorage，支持返回 true，否则返回 false
+     * @returns {Boolean}
+     */
+    function hasStorage() {
+      var mod = 'krouter.storage.ability'
+      try {
+        sessionStorage.setItem(mod, mod)
+        sessionStorage.removeItem(mod)
+        return true
+      } catch(e) {
+        return false
+      }
+    }
+
     $.support = (function () {
       var support = {
-        touch: !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch)
-      };
-      return support;
-    })();
+        touch: !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch),
+        storage: hasStorage()
+      }
+      return support
+    })()
 
     $.touchEvents = {
       start: $.support.touch ? 'touchstart' : 'mousedown',
@@ -219,10 +237,17 @@
         return knife.isK(root) ? root[0].querySelector(sel) : root.querySelector(sel);
       return document.querySelector(sel);
     }
+    // 返回数组, 便于 forEach
     $.qus = function (sel, root) {
+      let es = null;
       if (root)
-        return knife.isK(root) ? root[0].querySelectorAll(sel) : root.querySelectorAll(sel);
-      return document.querySelectorAll(sel);
+        es = knife.isK(root) ? root[0].querySelectorAll(sel) : root.querySelectorAll(sel);
+      else
+        es = document.querySelectorAll(sel);
+      if (es.length > 0)
+        return Array.prototype.slice.call(es);
+      else
+        return [];
     }
     $.nms = function (name) {
       return document.getElementsByName(name)
@@ -398,6 +423,13 @@
       }
       return RC;
     }
+    $.hasChild = function(el) {
+      if (!el)
+        return false;
+      const child = el.children;
+      return child.length > 0;
+    }
+
     // 得到obj的上级元素TagName
     // ff parentNode 会返回 空 节点
     // ff textNode节点 没有 tagName
@@ -529,6 +561,23 @@
     $.moveFirst = function () {
       this.rowindex = 0;
     }
+
+    // Define methods that will be available on all
+    // Knife collections
+    // 原型, 在$()后可调用
+    $.fn = {
+      constructor: knife.K,
+      length: 0,
+
+      // Because a collection acts like an array
+      // copy over these useful array functions.
+      forEach: emptyArray.forEach,
+      reduce: emptyArray.reduce,
+      push: emptyArray.push,
+      sort: emptyArray.sort,
+      splice: emptyArray.splice,
+      indexOf: emptyArray.indexOf,
+    };
 
     // 返回 $ 类,可以直接调用其静态属性和方法
     return $
