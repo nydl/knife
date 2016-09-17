@@ -5,7 +5,7 @@
  */
 
 // import $ from './kevent';
-import {emit} from './kevent';
+import $ from './kevent';
 
 // private
 let prevLoc = getLoc();
@@ -70,7 +70,7 @@ function inViewport(node) {
 
 // source helper
 function setSource(node) {
-  emit('lazy:src:before', node);
+  $.emit('lazy:src:before', node);
 
   // prefer srcset, fallback to pixel density
   if (srcset && node.hasAttribute(sets.srcset)) {
@@ -80,7 +80,7 @@ function setSource(node) {
     node.setAttribute('src', retina || node.getAttribute(sets.normal));
   }
 
-  emit('lazy:src:after', node);
+  $.emit('lazy:src:after', node);
   [sets.normal, sets.retina, sets.srcset].forEach(attr => node.removeAttribute(attr));
   update();
 }

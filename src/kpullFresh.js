@@ -5,7 +5,7 @@
 
 const $ = require('./knife');
 import device from './kdevice';
-import {emit} from './kevent';
+import kani from './kanimat';
 
 function start(pageContainer) {
   var eventsTarget = $(pageContainer);
@@ -28,52 +28,6 @@ function start(pageContainer) {
   } else {
     triggerDistance = 44;
   }
-
-  function __dealCssEvent(eventNameArr, callback) {
-    var events = eventNameArr,
-      i, dom = this;// jshint ignore:line
-
-    function fireCallBack(e) {
-      /*jshint validthis:true */
-      if (e.target !== this) return;
-      callback.call(this, e);
-      for (i = 0; i < events.length; i++) {
-        dom.off(events[i], fireCallBack);
-      }
-    }
-
-    if (callback) {
-      for (i = 0; i < events.length; i++) {
-        dom.on(events[i], fireCallBack);
-      }
-    }
-  }
-
-  $.fn.animationEnd = function (callback) {
-    __dealCssEvent.call(this, ['webkitAnimationEnd', 'animationend'], callback);
-    return this;
-  };
-  $.fn.transitionEnd = function (callback) {
-    __dealCssEvent.call(this, ['webkitTransitionEnd', 'transitionend'], callback);
-    return this;
-  };
-  $.fn.transition = function (duration) {
-    if (typeof duration !== 'string') {
-      duration = duration + 'ms';
-    }
-    for (var i = 0; i < this.length; i++) {
-      var elStyle = this[i].style;
-      elStyle.webkitTransitionDuration = elStyle.MozTransitionDuration = elStyle.transitionDuration = duration;
-    }
-    return this;
-  };
-  $.fn.transform = function (transform) {
-    for (var i = 0; i < this.length; i++) {
-      var elStyle = this[i].style;
-      elStyle.webkitTransform = elStyle.MozTransform = elStyle.transform = transform;
-    }
-    return this;
-  };
 
   function handleTouchStart(e) {
     if (isTouched) {
@@ -172,8 +126,8 @@ function start(pageContainer) {
       if (container.hasClass('refreshing')) return;
       container.addClass('refreshing');
       // container.trigger('refresh');
-      // container.trigger('refresh');
-      emit('pullFresh:refresh', container);
+      container.trigger('refresh');
+      // emit('pullFresh:refresh', container);
     } else {
       container.removeClass('pull-down');
     }
@@ -210,8 +164,8 @@ function trigger(container) {
   if (container.length === 0) container = $('.pull-to-refresh-content');
   if (container.hasClass('refreshing')) return;
   container.addClass('transitioning refreshing');
-  // container.trigger('refresh');
-  emit('pullFresh:refresh', container);
+  container.trigger('refresh');
+  // $.emit('pullFresh:refresh', container);
 }
 
 function stop(pageContainer) {

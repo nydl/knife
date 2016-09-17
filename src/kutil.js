@@ -27,27 +27,6 @@ export function format(f, ...args) {
   return str;
 }
 
-/**
- * 修改微信 title
- */
-export function setTitle(val) {
-  setTimeout(() => {
-    // 利用iframe的onload事件刷新页面
-    document.title = val;
-
-    const fr = document.createElement('iframe');
-    // fr.style.visibility = 'hidden';
-    fr.style.display = 'none';
-    fr.src = 'img/favicon.ico';
-    fr.onload = () => {
-      setTimeout(() => {
-        document.body.removeChild(fr);
-      }, 0);
-    };
-    document.body.appendChild(fr);
-  }, 0);
-}
-
 export function urlParam(name) {
   let rc = null;
 
@@ -62,3 +41,55 @@ export function urlParam(name) {
   return rc;
 }
 
+// import pathToRegexp from 'path-to-regexp';
+
+/**
+ * 获取一个链接相对于当前页面的绝对地址形式
+ *
+ * 假设当前页面是 http://a.com/b/c
+ * 那么有以下情况:
+ * d => http://a.com/b/d
+ * /e => http://a.com/e
+ * #1 => http://a.com/b/c#1
+ * http://b.com/f => http://b.com/f
+ *
+ * @param {String} url url
+ * @returns {String}
+ */
+export function getAbsUrl(url) {
+  var link = document.createElement('a');
+  link.setAttribute('href', url);
+  const abs = link.href;
+  link = null;
+  return abs;
+}
+
+/**
+ * 获取一个 url 的基本部分，即不包括 hash
+ *
+ * @param {String} url url
+ * @returns {String}
+ */
+export function getBaseUrl(url) {
+  const pos = url.indexOf('#');
+  return pos === -1 ? url.slice(0) : url.slice(0, pos);
+}
+
+/**
+ * 把一个字符串的 url 转为一个可获取其 base 和 fragment 等的对象
+ *
+ * @param {String} url url
+ * @returns {UrlObject}
+ */
+export function getUrl(url) {
+  const full = getAbsUrl(url),
+    base = getBaseUrl(fullUrl),
+    hash = getHash(url);
+
+  return {
+    base,
+    full,
+    url,
+    hash
+  };
+}
