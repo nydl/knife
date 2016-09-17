@@ -235,18 +235,7 @@ const $ = require('./kdom');
   // Define methods that will be available on all
   // Knife collections
   // 原型, 在$()后可调用
-  $.fn = {
-    constructor: knife.K,
-    length: 0,
-
-    // Because a collection acts like an array
-    // copy over these useful array functions.
-    forEach: emptyArray.forEach,
-    reduce: emptyArray.reduce,
-    push: emptyArray.push,
-    sort: emptyArray.sort,
-    splice: emptyArray.splice,
-    indexOf: emptyArray.indexOf,
+  var fn = {
     concat: function () {
       var i, value, args = []
       for (i = 0; i < arguments.length; i++) {
@@ -365,17 +354,11 @@ const $ = require('./kdom');
     removeClass: function (name) {
       $.removeClass(this[0], name);
       return this
-    },
-    on: function (event, handle) {
-      this[0].addEventListener(event, handle);
-      return this
-    },
-    off: function (event, handle) {
-      this[0].removeEventListener(event, handle);
-      return this
     }
-
   }
+
+  // 合并到 $.fn 原型中
+  Object.assign($.fn, fn);
 
   // for now
   $.fn.detach = $.fn.remove;
