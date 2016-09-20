@@ -298,6 +298,9 @@
         setAttribute(el, attribute)
       })
     }
+    $.removeNode = function(el) {
+      el.parentNode.removeChild(el);
+    }
     $.prop = function (el, name, value) {
       name = propMap[name] || name
       return (value !== undefined) ?
@@ -561,6 +564,25 @@
     $.moveFirst = function () {
       this.rowindex = 0;
     }
+    $.fastLink = function () { // a 标签加载 touchstart 事件,避免 300毫秒等待
+      try {
+        const links = $.qus('a');
+        links.forEach(link => {
+          if (link.href && !$.hasClass(link, 'no-fast')) {
+            link.ontouchstart = (ev) => {
+              ev.preventDefault();
+              if (!ev.touches.length)
+                return;
+              if ($.hasClass(link, 'back'))
+                return history.back();
+              location.href = link.href;
+            };
+          }
+        });
+      } catch (e) {
+        alert(`fastLink exp: ${e.message}`);
+      }
+    }
 
     // Define methods that will be available on all
     // Knife collections
@@ -578,6 +600,8 @@
       splice: emptyArray.splice,
       indexOf: emptyArray.indexOf,
     };
+
+    $.K.prototype = $.knife.K.prototype = $.fn
 
     // 返回 $ 类,可以直接调用其静态属性和方法
     return $
