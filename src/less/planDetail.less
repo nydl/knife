@@ -1,0 +1,107 @@
+.plan-detail-pg {
+    .banner {
+        height: 145px;
+        background-image: url('/img/prod-detail-bg.jpg');
+        background-size: 100%;
+        background-position: center;
+        .banner-title {
+            padding-top: 8px;
+            text-align: center;
+            color: #fff;
+            .username {
+                font-size: 24px;
+            }
+            .plan-name {
+                font-size: 14px;
+            }
+        }
+        .banner-detail {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-pack: center;
+                justify-content: center;
+            -ms-flex-align: center;
+                align-items: center;
+            color: #fff;
+            font-size: 14px;
+            height: 90px;
+            .left {
+                margin-right: 10px;
+                height: 50px;
+                img {
+                    width: 80px;
+                    height: 50px;
+                }
+            }
+            .right {
+                .number {
+                    font-size: 20px;
+                }
+                p {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+.recharge-pg {
+    .money-box ul {
+        padding-left: 15px;
+        li {
+            float: left;
+            width: 30%;
+            list-style: none;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            input {
+                border: 1px solid #ccc;
+                width: 100%;
+                text-align: center;
+                padding: 8px 0;
+                color: #666;
+                background: #fff;
+                height: 46px;
+            }
+            input.selected {
+                border: 1px solid #0894ec;
+                color: #0894ec;
+            }
+        }
+    }
+}
+
+.apply-pg {
+    h1 {
+        font-size: 22px;
+        text-align: center;
+        font-weight: normal;
+        padding-top: 50px;
+    }
+    p {
+        text-align: center;
+    }
+    p img {
+        width: 100px;
+        height: 100px;
+    }
+
+}
+
+.btn-next, .btn-pay, .btn-apply {
+    color: #fff;
+    background-color: #0894ec;
+    display: block;
+    width: 90%;
+    margin: 0 auto;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+ul.border-fixed {
+    &:after {
+        display: none;
+    }
+}

@@ -1,0 +1,640 @@
+﻿// 变量
+@import "variables.less";
+// 图标网格
+@import "mixins.less";
+
+// 上传图片
+// @import "uploader.less";
+
+@import "kgrid.less";
+
+// 轮播,没有使用 sui 的, sui的比较大, 使用了这个: https://github.com/wechatui/swiper
+// @import "swiper.less";
+
+// 图片剪切
+.cropDiv{
+  /*
+  position: absolute;
+  display: none;
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  top:0;
+  left:0;
+  z-index: 9000;
+  */
+  background-color: black;
+}
+
+.cropImgDiv {
+  width:100%;
+  overflow: hidden;
+  margin-top: 5rem;
+  // outline: 2px dashed white;
+  border-top: 2px dashed black;
+  border-bottom: 2px dashed black;
+}
+
+.cropImg{
+  width:100%;
+  min-width: 100%;
+  margin-left:0;
+  margin-top:0;
+}
+
+.cropBtnDiv {
+  display: flex;
+  position: absolute;
+  bottom: 6rem;
+  width: 100%;
+  //justify-content: space-around;
+}
+
+.cropItem {
+  display: block;
+  flex: 1;
+  padding: 7px 0 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cropIcon {
+  margin: 0 auto;
+  width: 50px;
+  height: 50px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// 海报
+/*
+.postImgDiv {
+  width:100%;
+  height: 100%;
+  overflow: hidden;
+}
+*/
+
+.postImg{
+  width:100%;
+  min-width: 100%;
+  margin-left:0;
+  margin-top:0;
+}
+
+// 横版
+.postHImg{
+  width:90%;
+  margin-left:5%;
+  margin-top:20rem;
+}
+
+// 竖版
+.postVImg{
+  width:100%;
+  min-width: 100%;
+  margin-left:0;
+  margin-top:0;
+}
+
+.tbTitle {
+  color: #4b4b4b;
+  font-weight: bold;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #dce0e0;; /*#666;*/
+  white-space: nowrap;
+  text-align: center;
+  padding: 5px 0;
+}
+
+
+.orderTitle {
+  display: flex;
+  color: #4b4b4b;
+  font-size: .9rem;
+  font-weight: bold;
+  text-align: left;
+  width: 100%;
+  position: relative;
+  span {
+    flex: 1;
+  }
+
+  img {
+    width: 60px;
+    height: 60px;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: absolute;
+    right: -5px;
+    top: -38px;
+    //transform: translate(0, -200%);
+    //transform: scale(2, 2);
+    // transform: matrix(0, 2,2, 0,-50%, 0);
+  }
+}
+
+.prodTitle {
+  display: block;
+  color: #4b4b4b;
+  font-size: .9rem;
+  font-weight: bold;
+  text-align: left;
+  width: 100%;
+  border: none;
+}
+
+.subTitle {
+  display: block;
+  color: #a7a7a7;
+  font-size: .7rem;
+  text-align: left;
+  width: 100%;
+  border: none;
+
+  .subTitleV {
+    font-size: .6rem;
+  }
+}
+
+
+/*
+ * Edit Table, 类似 listView
+ * 编辑表的 class 请设置为 editTable
+ */
+/* 跟 listView  一致 */
+.editTable {
+  // 字体、颜色、文本对齐可继承,无需每级定义
+  // 表样式
+  border-collapse: collapse;
+  border: none; // 1px solid #CCCCCC;
+  table-layout: fixed; /*确保td 不被内容撑开*/
+  background: white; // WhiteSmoke
+  width: 100%;
+  margin: 1rem 0 0 0;
+  // font-size: .85rem; // 17
+  color: #828282;
+
+  h1 {
+    color: #4b4b4b;
+    font-size: .9rem; // 18
+    font-weight:400;
+    margin-bottom: .75rem;
+  }
+  h2 {
+    color: #4b4b4b;
+    font-size: .85rem; // 17
+    font-weight:400;
+    margin-bottom: .3rem;
+  }
+  h3 {
+    color: #4b4b4b;
+    font-size: .8rem; // 16
+    font-weight:400;
+  }
+  p {
+    margin: 10px 0;
+  }
+
+  /* 跟 listView th 一致 */
+  th {
+    color: #4b4b4b;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 4px 5px 2px;
+    border-bottom: 1px solid #dce0e0; /*#666;*/
+    //border-top: 1px solid #f1f1f1;
+    //border-left: 1px solid #cccccc;
+    //border-right: 1px solid #cccccc;
+    background-color: white; //#396799; /*#396799; lightsteelblue; *#cedce9; #ebebed;*/
+    white-space: nowrap;
+    text-align: center; /*text-align: left;*/
+    height: 1rem;
+  }
+
+  .imgTitle {
+    color: #4b4b4b;
+    font-size: .85rem;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  tbody {
+    background-color: white;
+  }
+
+  /* 跟 listView odd tr 一致 */
+  tr {
+    min-height: 2.2rem;
+    //background-color: lavender;
+    input, span {
+      min-height: 2.2rem;
+      //background: lavender;
+      padding: 10px 0 10px 0.75rem;
+    }
+  }
+
+  /* mobile no use odd even!
+  .etRowOdd {
+    min-height: 2.2rem;
+    //background-color: lavender;
+    input, span {
+      min-height: 2.2rem;
+      //background: lavender;
+      padding: 5px 0.75rem;
+    }
+  }
+
+  .etRowEven {
+    min-height: 2.2rem;
+    //background-color: whitesmoke;
+    input, span {
+      min-height: 2.2rem;
+      //background: whitesmoke;
+      padding: 5px 0.75rem;
+    }
+  }
+  */
+
+  td {
+    // border: 1px solid #cccccc !important;
+    border: none;
+    // border-bottom: 1px solid #cccccc;
+    border-collapse: collapse;
+    // padding: 5px;
+    vertical-align:top;
+  }
+
+  /* editTable 独有的，跟 行 底色一致,与TD类似 */
+  input {
+    border: none;
+    vertical-align: bottom;
+    padding: 2px;
+    cursor: pointer;
+    /*height: 22px;*/
+    width: 100%;
+    //text-align: center;
+  }
+
+  .specN {
+    color: #4b4b4b;
+  }
+  .specV {
+    color: #4b4b4b; //#828282;
+  }
+
+  /* 对 input不起作用,对span起作用
+  .specN:after {
+    content: ':';
+    display: inline-block;
+  }
+  */
+
+  span {
+    //float: left;
+    display: block;
+    text-align: left;
+    word-break: break-all;
+    width: 100%;
+    height: 100%;
+    // contenteditable = plaintext-only";
+    -webkit-user-modify: read-write-plaintext-only;
+    padding: 0;
+    background: white;
+  }
+
+  textarea {
+    background: white;
+    //border: 1px red;
+    padding: 3px;
+    width: 100%; /*100%-10px会撑开页面超出10px*/
+    height: 1rem;
+    text-align: left;
+  }
+
+  /* editTable编辑时的式样,有个虚线边框 */
+  .etCellEdit {
+    //background: LightSteelBlue !important; /*#d0e0ff;*/
+    border: 1px dotted black !important;
+    //text-align: left !important;
+    //padding: 0; /*5px 0px 3px;*/
+    /*height: 22px;*/
+    //width: 98%;
+    color: #4b4b4b;
+  }
+
+  .etCellView {
+    color: #4b4b4b;
+  }
+
+  /*编辑样式*/
+  .etEdit {
+    text-align: left !important;
+    padding: 5px; /*5px 0px 3px;*/
+    /*height: 100px;*/
+    width: 100%;
+    word-break: break-all;
+  }
+
+  /* 出入的图片样式,用于手机*/
+  .etImg {
+    padding: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  /* editTable 独有，选择行，跟 鼠标移动时的 背景色一致 */
+  .etRowSelOdd, .etRowSelEven {
+    background: LightSteelBlue;
+
+    input, span {
+      background: LightSteelBlue;
+    }
+  }
+
+  /* 行号,注意字体 */
+  .etCellSel {
+    background: White;
+    cursor: pointer;
+    color: Navy;
+  }
+
+  /* 行号 鼠标 移动 变色*/
+  .etCellSelMouseOver {
+    background: LightSteelBlue;
+    cursor: pointer;
+  }
+
+  /*用于输入组件所在 层的外框*/
+  .etInputBox {
+    position: absolute;
+    border: 1px solid #7F9DB9;
+    width: 182px;
+    height: 100px;
+    overflow: hidden;
+  }
+
+  .etInputSel {
+    position: relative;
+    margin: -3px;
+    width: 500px;
+    height: 500px;
+    line-height: 14px;
+    /*color:#909993;*/
+  }
+}
+
+// 表格带格线
+.etBorder {
+  td {
+    border-bottom: 1px solid #cccccc;
+  }
+}
+
+// 产品浏览
+.prodView {
+  font-size: .65rem; // 13px
+
+  .specVTable {
+    /* 跟 listView odd tr 一致 */
+    tr {
+      min-height: 1.3rem;
+      //background-color: lavender;
+      input, span {
+        min-height: 1.3rem;
+        padding: 5px 2px 5px 0.75rem;
+      }
+    }
+
+    .etLabel {
+      color: #4b4b4b;
+    }
+
+    .etLabel:after {
+      content: ':';
+      display: inline-block;
+    }
+  }
+
+  .descVTable {
+    margin: 0;
+    line-height: 22px;
+
+    tr {
+      min-height: 1.3rem;
+      input, span {
+        min-height: 1.3rem;
+        padding: 5px 2px 5px 0.75rem;
+      }
+    }
+  }
+
+  // 规格标题
+  .specTitle {
+    text-align: center;
+    font-size: .8rem;
+    color: #4b4b4b;
+    margin-top: 30px;
+    font-weight: 700;
+    clear: both;
+    padding: 0 10px;
+    position: relative;
+
+    div {
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      padding: 0 32px;
+    }
+
+    div:before {
+      content: '';
+      width: 25px;
+      height: 1px;
+      position: absolute;
+      top: 12px;
+      left: 1px;
+      background: #b8b8b8;
+    }
+
+    div:after {
+      content: '';
+      width: 25px;
+      height: 1px;
+      position: absolute;
+      top: 12px;
+      right: 1px;
+      background: #b8b8b8;
+    }
+  }
+
+  .prodInfo {
+    text-align: left;
+    color: #878787;
+    font-size: .6rem;
+    padding: 8px 15px;
+
+    .prodPrice {
+      margin-top: 10px;
+      height: 25px;
+      line-height: 25px;
+      // color: #a7a7a7;
+
+      .price {
+        color: #ff4d45;
+        font-size: 1.2rem;
+        span {
+          font-size: .9rem;
+          padding-right: 1px;
+        }
+      }
+
+      .pack {
+        color: #626262;
+        font-size: .7rem;
+      }
+
+      .listPrice {
+        text-decoration: line-through;
+      }
+    }
+
+    .prodShip {
+      margin-top: 0px;
+      height: 24px;
+      line-height: 24px;
+      // color: #a7a7a7;
+      color: #4c4440;;
+
+      .prodEnsure {
+        border-radius: 3px;
+        background-color: #ff2741;
+        color: #fff;
+        margin-left: 10px;
+        line-height: 1;
+        padding: 1px 5px;
+      }
+    }
+  }
+}
+
+.orderPrice {
+  color: #ff4d45;
+  // font-size: .85rem;
+  span {
+    font-size: .7rem;
+    padding-right: 1px;
+  }
+}
+
+.weui_cell {
+  .cell_label {
+    color:#828282;
+  }
+
+  .cell_info {
+    color:#4b4b4b;
+  }
+}
+
+// 轮播图
+.swipe {
+  overflow: hidden;
+  visibility: hidden;
+  position: relative;
+  width: 100%;
+  height: 100vw/1.5; // 默认高度
+  //max-width:500px;
+  //height: 25%;
+  margin:0 auto;
+
+  // 轮播图片套层
+  .swipe-wrap {
+    overflow: hidden;
+    position: relative;
+    height:100%;
+  }
+
+  // 单张图片层,向左浮动
+  .swipe-wrap > div {
+    float:left;
+    height:100%;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+  }
+}
+
+
+/*
+// grid icon
+.icon {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  vertical-align: middle;
+}
+*/
+
+.icon_button {
+  background: url("../img/icon_nav_button.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_cell {
+  background: url("../img/icon_nav_cell.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_toast {
+  background: url("../img/icon_nav_toast.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_dialog {
+  background: url("../img/icon_nav_dialog.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_progress {
+  background: url("../img/icon_nav_progress.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_msg {
+  background: url("../img/icon_nav_msg.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_article {
+  background: url("../img/icon_nav_article.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_actionSheet {
+  background: url("../img/icon_nav_actionSheet.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_icons {
+  background: url("../img/icon_nav_icons.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_panel {
+  background: url("../img/icon_nav_panel.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_tab {
+  background: url("../img/icon_nav_tab.png") no-repeat;
+  background-size: 28px 28px;
+}
+
+.icon_search_bar {
+  background: url("../img/icon_nav_search_bar.png") no-repeat;
+  background-size: 28px 28px;
+}

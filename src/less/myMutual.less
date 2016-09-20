@@ -1,0 +1,110 @@
+.my-mutual-pg {
+    .balance-box {
+        background-color: #fff;
+        margin-bottom: 10px;
+        padding: 20px 15px;
+        p {
+            margin: 0;
+        }
+        .balance-title {
+            font-size: 14px;
+            color: #999;
+        }
+        .num {
+            color: #222;
+            font-size: 28px;
+            font-weight: bold;
+        }
+    }
+}
+
+.plan-list {
+    background-color: #fff;
+    h3 {
+        position: relative;
+        text-align: center;
+        padding: 8px 0;
+        font-size: 15px;
+    }
+    .plan {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        .item-link {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
+            padding-left: 15px;
+            box-sizing: border-box;
+        }
+        .item-media {
+            box-sizing: border-box;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+                align-items: center;
+            -ms-flex-negative: 0;
+                flex-shrink: 0;
+            -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+            img {
+                width: 60px;
+                height: 38px;
+            }
+        }
+        .item-inner {
+            display: block;
+            -ms-flex-item-align: stretch;
+                align-self: stretch;
+            width: 100%;
+            padding: 15px;
+            .item-title-row {
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-pack: justify;
+                    justify-content: space-between;
+                font-weight: bold;
+                .item-title {
+                    -ms-flex-negative: 1;
+                        flex-shrink: 1;
+                    white-space: nowrap;
+                    position: relative;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 100%;
+                    font-size: 17px;
+                    color: rgb(61, 65, 69);
+                    span {
+                        font-size: 14px;
+                        color: #3aa9fb;
+                    }
+                }
+                .item-after {
+                    font-size: 17px;
+                    color: #3d4145;
+                    font-weight: normal;
+                }
+            }
+            .item-subtitle {
+                margin-top: 10px;
+                font-size: 15px;
+                color: rgb(61, 65, 69);
+            }
+            .item-text {
+                color: rgb(95, 100, 110);
+                font-size: 15px;
+            }
+        }
+    }
+    .plan-empty {
+        font-size: 14px;
+        color: #d3d3d3;
+        text-align: center;
+        p {
+            line-height: 120px;
+            padding: 0;
+            margin: 0;
+        }
+    }
+}

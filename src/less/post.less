@@ -1,0 +1,113 @@
+
+@icon-height: 70px;
+@post-event: -0px -0px@icon-height @icon-height;
+@post-link: -0px -@icon-height @icon-height @icon-height;
+@post-shop: -0px -2*@icon-height @icon-height @icon-height;
+@post-topic: -0px -3*@icon-height @icon-height @icon-height;
+@post-write: -0px -4*@icon-height @icon-height @icon-height;
+
+.sprite-width(@sprite) {
+  width: extract(@sprite, 3);
+}
+
+.sprite-height(@sprite) {
+  height: extract(@sprite, 4);
+}
+
+.sprite-position(@sprite) {
+  @sprite-offset-x: extract(@sprite, 1);
+  @sprite-offset-y: extract(@sprite, 2);
+  background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite(@sprite) {
+  .sprite-position(@sprite);
+  //.sprite-width(@sprite);
+  //.sprite-height(@sprite);
+}
+
+// 发布选择
+.post {
+  padding-bottom: 30px;
+
+  .postHd {
+    padding: 2rem 0;
+  }
+
+  .postBd {
+    margin: 10rem 0;
+  }
+
+  .postTitle {
+    text-align: center;
+    font-size: 34px;
+    color: #3cc51f;
+    font-weight: 400;
+    margin: 0 15%;
+  }
+
+  .postDesc {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+  }
+}
+
+
+// 平铺图标
+.tiles {
+  display: flex;
+  position: absolute;
+  bottom: 12rem;
+  width: 100%;
+  //justify-content: space-around;
+  .tileItem {
+    display: block;
+    flex: 1;
+    padding: 7px 0 0;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+
+    .icon-post {
+      background-image: url('http://nydl-10038118.cos.myqcloud.com/img/postIcon.png');
+      display: block;
+      background-size:100% 500%;
+      width: @icon-height;
+      height: @icon-height;
+      margin: 0 auto; // 居中
+    }
+
+    .icon-event {
+      .sprite(@post-event);
+    }
+    .icon-link {
+      .sprite(@post-link);
+    }
+    .icon-shop {
+      .sprite(@post-shop);
+    }
+    .icon-topic {
+      .sprite(@post-topic);
+    }
+    .icon-write {
+      .sprite(@post-write);
+    }
+  }
+
+  .tileIcon {
+    margin: 0 auto; // 居中
+    width: 70px;
+    height: 70px;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .tileLabel {
+    font-size: .7rem;
+    color: #4b4b4b;
+  }
+}
+

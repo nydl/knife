@@ -1,0 +1,32 @@
+@post-event: -0px -0px 200px 200px;
+@post-link: -0px -200px 200px 200px;
+@post-shop: -0px -400px 200px 200px;
+@post-topic: -0px -600px 200px 200px;
+@post-write: -0px -800px 200px 200px;
+
+.sprite-width(@sprite) {
+  width: extract(@sprite, 3);
+}
+
+.sprite-height(@sprite) {
+  height: extract(@sprite, 4);
+}
+
+.sprite-position(@sprite) {
+  @sprite-offset-x: extract(@sprite, 1);
+  @sprite-offset-y: extract(@sprite, 2);
+  background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite(@sprite, @display:block) {
+  .sprite-position(@sprite);
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: @display;
+  .sprite-width(@sprite);
+  .sprite-height(@sprite);
+}
+
+.icon-post {
+  background-image: url('../images/sprite-post.png');
+}

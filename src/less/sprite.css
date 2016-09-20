@@ -1,0 +1,30 @@
+
+.icon-post {
+  background-image: url('../images/sprite-post.png');
+}
+
+.icon-post-event {
+  background-position: -0px -0px;
+  width: 208px;
+  height: 208px;
+}
+.icon-post-link {
+  background-position: -0px -208px;
+  width: 208px;
+  height: 208px;
+}
+.icon-post-shop {
+  background-position: -0px -416px;
+  width: 208px;
+  height: 208px;
+}
+.icon-post-topic {
+  background-position: -0px -624px;
+  width: 208px;
+  height: 208px;
+}
+.icon-post-write {
+  background-position: -0px -832px;
+  width: 208px;
+  height: 208px;
+}

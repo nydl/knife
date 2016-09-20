@@ -1,7 +1,7 @@
 /**
  * Created by way on 16/8/29.
  * knife 引入模块
- * 可添加扩充、覆盖部分
+ * 可添加扩充、覆盖 k模块的功能
  */
 
 const $ = require('./knife');

@@ -1,4 +1,3 @@
-
 /**
  * Created by way on 16/9/13.
  * 基于 knife ui的 路由组件
@@ -7,7 +6,7 @@
  * 建议与传统 hash 区分开来, 请使用 #! 作为 路由 hash!!!
  */
 
-import $ from './kevent';
+import $ from './kanimat';
 
 const CFG = {
   sectionGroupClass: 'page-group',
@@ -67,7 +66,7 @@ function setHash(url) {
  * 修改微信 title
  */
 function setTitle(val) {
-  if(document.title === val)
+  if (document.title === val)
     return;
 
   if (/MicroMessenger/i.test(navigator.userAgent)) {
@@ -109,6 +108,7 @@ class Router {
   // default option
   _opts = {
     container: '#dvContainer',
+    splashTime: 1000,
     className: 'page',
     showClass: 'page-current'
   };
@@ -123,29 +123,31 @@ class Router {
 
   // start route config
   _start = null;
+  _splash = false;
 
   /**
    * constructor
    * @param opts
    */
   constructor(opts) {
-    this._opts = Object.assign({}, this._opts, opts);
+    // this._opts = Object.assign({}, this._opts, opts);
+    this._opts.container = opts.container || this._opts.container;
+    this._opts.splashTime = opts.splashTime || this._opts.splashTime;
+    this._opts.className = opts.className || this._opts.className;
+    this._opts.showClass = opts.showClass || this._opts.showClass;
+
     this._$container = $.qu(this._opts.container);
   }
 
-  set start(val) {
-    this._start = val;
-  }
-
   /**
-   * initial，监控url hash变化
+   * 初始化并启动路由，监控url hash变化, 更改当前路由 为 指定 路由
    * @returns {Router}
    */
-  init(route) {
+  start(route) {
     if (route)
       this._start = route;
-    else if (this._routes.length > 0)
-      this._start = this._routes[0];
+    //else if (this._routes.length > 0)
+    //  this._start = this._routes[0];
 
     // why not `history.pushState`? see https://github.com/weui/weui/issues/26, Router in wechat webview
     // pushState 不支持 微信侧滑返回
@@ -161,20 +163,25 @@ class Router {
       this.go(hash, oldHash);
     }, false);
 
-/*
-    if (history.state && history.state._index) {
-      this._index = history.state._index;
-    }
+    /*
+     if (history.state && history.state._index) {
+     this._index = history.state._index;
+     }
 
-    this._index--;
-*/
-    this.bindLink();
+     this._index--;
+     */
+
+    // splash 画面不需要 动画
+    this._splash = true;
 
     // 当前页面刷新加载
-    if (getHash(location.href) === this._start.hash) // `#${url}`;
-      this.go(this._start.hash);
-    else
-      setHash(this._start.hash);
+    if (route) {
+      if (getHash(location.href) === this._start.hash) // `#${url}`;
+        this.go(this._start.hash);
+      else
+        setHash(this._start.hash);
+    } else
+      $.fastLink();
 
     /*
      const hash = getHash(location.href);
@@ -185,49 +192,12 @@ class Router {
   }
 
   /**
-   * use ontouchstart replace onclick, implement faskclick!
-   */
-  bindLink() {
-    try {
-      const links = $.qus('a');
-      links.forEach(link => {
-        if (link.href && link.href.indexOf('javascript:') === -1) {
-          // # 替换为 #!, 支持 SEO
-          // if (/#[^!]/.test(link.href))
-          //   link.href = link.href.replace('#', '#!');
-
-          link.ontouchstart = (ev) => {
-            ev.preventDefault();
-            if (!ev.touches.length)
-              return;
-
-            if ($.hasClass(link, 'back'))
-              return history.back();
-
-            // 不改变 hash,避免引起 普通 hash不能工作!
-/*
-            const hash = getHash(link.href);
-            if (hash) {
-              // alert(hash);
-              location.hash = `!${hash}`;
-            } else
-              location.href = link.href;
-*/
-          };
-        }
-      });
-    } catch(e) {
-      alert(`bindLink exp: ${e.message}`);
-    }
-  }
-
-  /**
    * go to the specify url
    * @param {String} url
    * @param {Boolean} isBack, default: false
    * @returns {Router}
    */
-  go(url, fromUrl) {
+  go(url) {
     const r = this.getRoute(url);
     if (r) {
       // 返回
@@ -270,8 +240,8 @@ class Router {
           dv.id = r.id;
           dv.innerHTML = html;
 
-          if (r.className)
-            $.addClass(dv, `${r.className}`);
+          if (this._opts.className)
+            $.addClass(dv, `${this._opts.className}`);
 
           // 插在前面,否则会直接覆盖当前页,动画效果不好!
           if ($.hasChild(this._$container))
@@ -325,11 +295,13 @@ class Router {
         if (!r.loaded) {
           r.loaded = true;
 
-          this.bindLink();
-          if (typeof r.bind === 'function'/* && !r.__isBind*/) {
-            r.bind.call(dv);
-            // r.__isBind = true;
-          }
+          if (r.bind)
+            r.bind(dv, r.params); //.call(dv);
+
+          $.fastLink();
+        } else if (r.search !== r.lastSearch && r.bind) {// 参数变化, 重新 bind!
+          r.bind(dv, r.params); //.call(dv);
+          $.fastLink();
         }
 
         // 动画
@@ -349,8 +321,10 @@ class Router {
       };
 
       // const res = r.render(callback);
-      if (!r.loaded)
-        r.load(onload);
+      if (!r.loaded && r.view)
+        r.view(onload);
+      else if (!r.view)
+        throw new Error(`route ${route.id} hasn't view function!`);
       else
         enter();
 
@@ -368,10 +342,10 @@ class Router {
        }
        */
     }
-/*
-    else
-      throw new Error(`path ${url} was not found`);
-*/
+    /*
+     else
+     throw new Error(`path ${url} was not found`);
+     */
 
     return this;
   }
@@ -386,9 +360,30 @@ class Router {
     for (let i = 0, len = this._routes.length; i < len; i++) {
       const r = this._routes[i];
       // let keys = [];
+      // /prod/:no => /prod/999
+      // let ms = /\/:([^\/]+?)/?$/i.exec(r.path);
+      let search = '';
+      let path = url;
+
+      let pos = url.indexOf('?');
+      if (pos >= 0) {
+        search = url.substr(pos + 1);
+        path = url.substr(0, pos);
+      }
+
       const rx = new RegExp(r.path); // pathToRegexp(r.url, keys);
-      const ms = rx.exec(url);
+      const ms = rx.exec(path);
       if (ms) {
+        r.params = {};
+        if (search) {
+          const ps = search.split('&');
+          ps.forEach(p => {
+            pos = p.indexOf('=');
+            if (pos > 0)
+              r.params[p.substr(0, pos)] = p.substr(pos + 1);
+          });
+        }
+
         /*
          r.params = {};
          for (let j = 0, l = keys.length; j < l; j++) {
@@ -399,6 +394,8 @@ class Router {
          */
         // 记录当前 url
         r.url = url;
+        r.lastSearch = r.search;
+        r.search = search;
         return r;
       }
     }
@@ -411,22 +408,36 @@ class Router {
    * @returns {Router}
    */
   push(route) {
-    const exist = this._routes.filter(r => r.path === route.path)[0];
-    if (exist)
-      throw new Error(`route ${route.path} is existed!`);
+    try {
+      if (!route)
+        throw new Error('route is empty!');
 
-    if (!route.id)
-      throw new Error(`route ${route.id} is empty!`);
+      const exist = this._routes.filter(r => r.path === route.path)[0];
+      if (exist)
+        throw new Error(`route ${route.path} is existed!`);
 
-    const r = Object.assign({}, {
-      path: '*',
-      render: $.noop,
-      bind: $.noop
-    }, route);
+      if (!route.hash)
+        throw new Error(`route's hash is empty!`);
 
-    this._routes.push(r);
+      if (!route.view)
+        throw new Error(`route's view is empty!`);
 
-    return this;
+      route.id = `pg${route.hash.replace(/\//g, '-')}`;
+      route.path = route.path || '*';
+      route.bind = route.bind || $.noop;
+      /*
+       const r = Object.assign({}, {
+       path: '*',
+       // view: $.noop,
+       bind: $.noop
+       }, route);
+       */
+      this._routes.push(route);
+
+      return this;
+    } catch (e) {
+      alert(`router.push exp: ${e.message}`);
+    }
   }
 
   /**
@@ -438,32 +449,32 @@ class Router {
    * @param direction 新文档切入方向
    * @private
    */
-/*
-  animateDoc($from, $to, $visibleSection, direction) {
-    var sectionId = $visibleSection.attr('id');
+  /*
+   animateDoc($from, $to, $visibleSection, direction) {
+   var sectionId = $visibleSection.attr('id');
 
-    var $visibleSectionInFrom = $from.find('.' + this._opts.showClass);
-    $visibleSectionInFrom.addClass(CFG.visiblePageClass).removeClass(this._opts.showClass);
+   var $visibleSectionInFrom = $from.find('.' + this._opts.showClass);
+   $visibleSectionInFrom.addClass(CFG.visiblePageClass).removeClass(this._opts.showClass);
 
-    $visibleSection.trigger(EVENTS.pageAnimationStart, [sectionId, $visibleSection]);
+   $visibleSection.trigger(EVENTS.pageAnimationStart, [sectionId, $visibleSection]);
 
-    this._animateElement($from, $to, direction);
+   this._animateElement($from, $to, direction);
 
-    $from.animationEnd(function () {
-      $visibleSectionInFrom.removeClass(CFG.visiblePageClass);
-      // 移除 document 前后，发送 beforePageRemove 和 pageRemoved 事件
-      $(window).trigger(EVENTS.beforePageRemove, [$from]);
-      $from.remove();
-      $(window).trigger(EVENTS.pageRemoved);
-    });
+   $from.animationEnd(function () {
+   $visibleSectionInFrom.removeClass(CFG.visiblePageClass);
+   // 移除 document 前后，发送 beforePageRemove 和 pageRemoved 事件
+   $(window).trigger(EVENTS.beforePageRemove, [$from]);
+   $from.remove();
+   $(window).trigger(EVENTS.pageRemoved);
+   });
 
-    $to.animationEnd(function () {
-      $visibleSection.trigger(EVENTS.pageAnimationEnd, [sectionId, $visibleSection]);
-      // 外层（init.js）中会绑定 pageInitInternal 事件，然后对页面进行初始化
-      $visibleSection.trigger(EVENTS.pageInit, [sectionId, $visibleSection]);
-    });
-  };
-*/
+   $to.animationEnd(function () {
+   $visibleSection.trigger(EVENTS.pageAnimationEnd, [sectionId, $visibleSection]);
+   // 外层（init.js）中会绑定 pageInitInternal 事件，然后对页面进行初始化
+   $visibleSection.trigger(EVENTS.pageInit, [sectionId, $visibleSection]);
+   });
+   };
+   */
 
   /**
    * 把当前文档的展示 section 从一个 section 切换到另一个 section
@@ -486,10 +497,10 @@ class Router {
     if (to) {
       $to = $(to);
       $.addClass(to, this._opts.showClass);
-      $(to).trigger(EVENTS.pageAnimationStart, [to.id, to]);
+      $to.trigger(EVENTS.pageAnimationStart, [to.id, to]);
     }
 
-    if (from && to) {
+    if (from && to && !this._splash) {
       this.animateEle(from, to, dir);
       $to.animationEnd(() => {
         $to.trigger(EVENTS.pageAnimationEnd, [to.id, to]);
@@ -497,6 +508,9 @@ class Router {
         $to.trigger(EVENTS.pageInit, [to.id, to]);
       });
     }
+
+    if (this._splash)
+      this._splash = false;
   }
 
   /**
@@ -583,24 +597,29 @@ class Router {
     // 如果已经是当前页，不做任何处理
     if (curPage === newPage)
       return;
-/*
- if (r.className || r.showClass) {
- $.removeClass($.qu(`.${r.showClass}`), r.showClass);
- $.addClass(dv, `${r.className} ${r.showClass}`);
- if (r.title)
- setTitle(r.title);
- }
-*/
-    this.animateSec(curPage, newPage, back ? DIRECTION.leftToRight : DIRECTION.rightToLeft);
+    /*
+     if (r.className || r.showClass) {
+     $.removeClass($.qu(`.${r.showClass}`), r.showClass);
+     $.addClass(dv, `${r.className} ${r.showClass}`);
+     if (r.title)
+     setTitle(r.title);
+     }
+     */
+    if (this._splash) {
+      setTimeout(() => this.animateSec(curPage, newPage, back ? DIRECTION.leftToRight : DIRECTION.rightToLeft),
+        this._opts.splashTime);
+    } else
+      this.animateSec(curPage, newPage, back ? DIRECTION.leftToRight : DIRECTION.rightToLeft);
+
     setTitle(this.route.title);
     // this.pushNewState('#' + sectionId, sectionId);
   }
 
-/*
-  sameDoc(url, anotherUrl) {
-    return getBase(url) === getBase(anotherUrl);
-  }
-*/
+  /*
+   sameDoc(url, anotherUrl) {
+   return getBase(url) === getBase(anotherUrl);
+   }
+   */
 }
 
 export default Router;
