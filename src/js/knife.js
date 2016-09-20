@@ -1,9 +1,10 @@
 // Knife.js
-// (c) 2016 Walter Yu from Knife
+// (c) 2016 Walter Yu from zepto
 // remove more not use function, keep smaller for h5.
 // Knife.js may be freely distributed under the MIT license.
 
 const $ = require('./kdom');
+
 (function (global, factory) {
   if (typeof define === 'function' && define.amd)
     define(function () {
@@ -235,53 +236,53 @@ const $ = require('./kdom');
   // Define methods that will be available on all
   // Knife collections
   // 原型, 在$()后可调用
-  var fn = {
-    concat: function () {
+  // var fn = {
+  $.fn.concat = function () {
       var i, value, args = []
       for (i = 0; i < arguments.length; i++) {
         value = arguments[i]
         args[i] = knife.isK(value) ? value.toArray() : value
       }
       return concat.apply(knife.isK(this) ? this.toArray() : this, args)
-    },
+    }
     // `map` and `slice` in the jQuery API work differently
     // from their array counterparts
-    map: function (fn) {
+  $.fn.map = function (fn) {
       return $($.map(this, function (el, i) {
         return fn.call(el, i, el)
       }))
-    },
-    slice: function () {
+    }
+  $.fn.slice = function () {
       return $(slice.apply(this, arguments))
-    },
-    get: function (idx) {
+    }
+  $.fn.get = function (idx) {
       return idx === undefined ? slice.call(this) : this[idx >= 0 ? idx : idx + this.length]
-    },
-    toArray: function () {
+    }
+  $.fn.toArray = function () {
       return this.get()
-    },
-    size: function () {
+    }
+  $.fn.size = function () {
       return this.length
-    },
-    remove: function () {
+    }
+  $.fn.remove = function () {
       return this.each(function () {
         if (this.parentNode != null)
           this.parentNode.removeChild(this)
       })
-    },
-    each: function (callback) {
+    }
+  $.fn.each = function (callback) {
       emptyArray.every.call(this, function (el, idx) {
         return callback.call(el, idx, el) !== false
       })
       return this
-    },
-    filter: function (selector) {
+    }
+  $.fn.filter = function (selector) {
       if (isFunction(selector)) return this.not(this.not(selector))
       return $(filter.call(this, function (element) {
         return knife.matches(element, selector)
       }))
-    },
-    find: function (sel) {
+    }
+  $.fn.find = function (sel) {
       var result, $this = this
       if (!sel) result = $()
       else if (this.length == 1) result = $(knife.qs(sel, this[0]))
@@ -299,66 +300,62 @@ const $ = require('./kdom');
        })
        */
       return result
-    },
-    contents: function () {
+    }
+  $.fn.contents = function () {
       return this.map(function () {
         return this.contentDocument || slice.call(this.childNodes)
       })
-    },
-    empty: function () {
+    }
+  $.fn.empty = function () {
       return this.each(function () {
         this.innerHTML = ''
       })
-    },
+    }
     // `pluck` is borrowed from Prototype.js
-    pluck: function (property) {
+  $.fn.pluck = function (property) {
       return $.map(this, function (el) {
         return el[property]
       })
-    },
-    html: function (html) {
+    }
+  $.fn.html = function (html) {
       var rs = $.html(this[0], html);
       return (0 in arguments) ? this : rs
     },
-    text: function (text) {
+    $.fn.text = function (text) {
       return 0 in arguments ?
         this.each(function (idx) {
           var newText = funcArg(this, text, idx, this.textContent)
           this.textContent = newText == null ? '' : '' + newText
         }) :
         (0 in this ? this.pluck('textContent').join("") : null)
-    },
-    attr: function (name, value) {
+    }
+  $.fn.attr = function (name, value) {
       var rs = $.attr(this[0], name, value);
       return (1 in arguments) ? this : rs
-    },
-    removeAttr: function (name) {
+    }
+  $.fn.removeAttr = function (name) {
       $.removeAttr(this[0], name);
       return this
-    },
-    prop: function (name, value) {
+    }
+  $.fn.prop = function (name, value) {
       var rs = $.prop(this[0], name, value);
       return (1 in arguments) ? this : rs
-    },
-    removeProp: function (name) {
+    }
+  $.fn.removeProp = function (name) {
       $.removeProp(this[0], name);
       return this
-    },
-    hasClass: function (name) {
+    }
+  $.fn.hasClass = function (name) {
       return $.hasClass(this[0], name)
-    },
-    addClass: function (name) {
+    }
+  $.fn.addClass = function (name) {
       $.addClass(this[0], name);
       return this
-    },
-    removeClass: function (name) {
+    }
+  $.fn.removeClass = function (name) {
       $.removeClass(this[0], name);
       return this
     }
-  }
-
-  // 合并到 $.fn 原型中
-  Object.assign($.fn, fn);
 
   // for now
   $.fn.detach = $.fn.remove;
@@ -441,8 +438,6 @@ const $ = require('./kdom');
   // Export internal API functions in the `$.knife` namespace
   $.knife.uniq = uniq
   $.knife.deserializeValue = deserializeValue
-
-  $.K.prototype = $.knife.K.prototype = $.fn
 
   return $
 }))
