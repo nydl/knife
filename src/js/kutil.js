@@ -74,22 +74,3 @@ export function getBaseUrl(url) {
   const pos = url.indexOf('#');
   return pos === -1 ? url.slice(0) : url.slice(0, pos);
 }
-
-/**
- * 把一个字符串的 url 转为一个可获取其 base 和 fragment 等的对象
- *
- * @param {String} url url
- * @returns {UrlObject}
- */
-export function getUrl(url) {
-  const full = getAbsUrl(url),
-    base = getBaseUrl(fullUrl),
-    hash = getHash(url);
-
-  return {
-    base,
-    full,
-    url,
-    hash
-  };
-}
