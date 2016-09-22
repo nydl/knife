@@ -124,6 +124,7 @@ class Router {
   // start route config
   _start = null;
   _splash = false;
+  _go = false;
 
   /**
    * constructor
@@ -159,8 +160,8 @@ class Router {
       if (oldHash === hash) return;
 
       // const state = history.state || {};
-      // this.go(hash, state._index <= this._index);
-      this.go(hash, oldHash);
+      // this.to(hash, state._index <= this._index);
+      this.to(hash, oldHash);
     }, false);
 
     /*
@@ -177,7 +178,7 @@ class Router {
     // 当前页面刷新加载
     if (route) {
       if (getHash(location.href) === this._start.hash) // `#${url}`;
-        this.go(this._start.hash);
+        this.to(this._start.hash);
       else
         setHash(this._start.hash);
     } else
@@ -186,18 +187,33 @@ class Router {
     /*
      const hash = getHash(location.href);
      const route = this.getRoute(hash);
-     this.go(route ? hash : this._start);
+     this.to(route ? hash : this._start);
      */
     return this;
   }
 
   /**
-   * go to the specify url
+   * 导航并传递对象参数, hash 直接导航只能传字符参数,不能传对象参数
+   * @param url
+   * @param params 支持对象参数 {v: obj}
+   */
+  go(url, params) {
+    this._go = false;
+    const r = this.getRoute(url);
+    if (r) {
+      r.params = r.params || {};
+      $.assign(r.params, params);
+      this._go = true;
+    }
+    location.hash = url;
+  }
+
+  /**
+   * to the specify url, 内部访问
    * @param {String} url
-   * @param {Boolean} isBack, default: false
    * @returns {Router}
    */
-  go(url) {
+  to(url) {
     const r = this.getRoute(url);
     if (r) {
       // 返回
@@ -374,15 +390,18 @@ class Router {
       const rx = new RegExp(r.path); // pathToRegexp(r.url, keys);
       const ms = rx.exec(path);
       if (ms) {
-        r.params = {};
-        if (search) {
-          const ps = search.split('&');
-          ps.forEach(p => {
-            pos = p.indexOf('=');
-            if (pos > 0)
-              r.params[p.substr(0, pos)] = p.substr(pos + 1);
-          });
-        }
+        // go 已经处理过参数, 不再重复处理
+        if (!this._go) {
+          r.params = {};
+          if (search) {
+            const ps = search.split('&');
+            ps.forEach(p => {
+              pos = p.indexOf('=');
+              if (pos > 0)
+                r.params[p.substr(0, pos)] = p.substr(pos + 1);
+            });
+          }
+        } else this._go = false;
 
         /*
          r.params = {};
@@ -425,6 +444,7 @@ class Router {
       route.id = `pg${route.hash.replace(/\//g, '-')}`;
       route.path = route.path || '*';
       route.bind = route.bind || $.noop;
+      route.router = this;
       /*
        const r = Object.assign({}, {
        path: '*',

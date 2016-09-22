@@ -19,6 +19,7 @@ const $ = require('./kdom');
     concat = emptyArray.concat,
     filter = emptyArray.filter,
     slice = emptyArray.slice,
+
     document = window.document,
     elementDisplay = {},
     cssNumber = {
