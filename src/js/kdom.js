@@ -135,30 +135,19 @@
     $.expr = {}
     $.noop = function () {
     }
-
+    $.concat = emptyArray.concat
+    $.filter = emptyArray.filter
+    $.slice = emptyArray.slice
     // 静态属性,可直接调用
     $.type = function (obj) {
       return obj == null ? String(obj) :
       class2type[toString.call(obj)] || 'object'
     }
-
-    $.isFunction = function (value) {
-      return $.type(value) == 'function'
-    }
-    $.isWindow = function (obj) {
-      return obj != null && obj == obj.window
-    }
-
-    $.isDocument = function (obj) {
-      return obj != null && obj.nodeType == obj.DOCUMENT_NODE
-    }
-
-    $.isObject = function (obj) {
-      return $.type(obj) == 'object'
-    }
-    $.isPlainObject = function (obj) {
-      return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
-    }
+    $.isFunction = function (value) {return $.type(value) == 'function'}
+    $.isWindow = function (obj) {return obj != null && obj == obj.window}
+    $.isDocument = function (obj) {return obj != null && obj.nodeType == obj.DOCUMENT_NODE}
+    $.isObject = function (obj) {return $.type(obj) == 'object'}
+    $.isPlainObject = function (obj) {return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype}
     $.isArray = Array.isArray ||
       function (object) {
         return object instanceof Array
@@ -171,6 +160,44 @@
     $.trim = function (str) {
       return str == null ? '' : String.prototype.trim.call(str)
     }
+
+    /**
+     * Copy all but undefined properties from one or more to dst
+     * Object.assign 在安卓微信上无不支持
+     * @param dst
+     * @param srcs 支持单个对象 或 多个对象
+     * @param deep 深拷贝
+     */
+    $.assign = function (dst) {
+      if (!dst) return;
+      var srcs = $.slice.call(arguments, 1);
+      srcs && srcs.forEach(src => {
+        for (var key in src) {
+          if (src.hasOwnProperty(key) && src[key] !== undefined)
+            dst[key] = src[key]
+        }
+      })
+    }
+
+/*
+    $.extend = function (dst, src, deep) {
+      var frms = $.isArray(src) ? src : [src]
+      frms.forEach(frm => {
+        for (const key in frm) {
+          // if (!frm.hasOwnProperty(key)) {
+          if (deep && ($.isPlainObject(frm[key]) || $.isArray(frm[key]))) {
+            if ($.isPlainObject(frm[key]) && !$.isPlainObject(dst[key]))
+              dst[key] = {}
+            if ($.isArray(frm[key]) && !$.isArray(dst[key]))
+              dst[key] = []
+            $.assign(dst[key], frm[key], deep)
+          }
+          else if (frm[key] !== undefined) dst[key] = frm[key]
+          // }
+        }
+      })
+    }
+*/
 
     /**
      * 判断浏览器是否支持 sessionStorage，支持返回 true，否则返回 false
@@ -598,7 +625,7 @@
       push: emptyArray.push,
       sort: emptyArray.sort,
       splice: emptyArray.splice,
-      indexOf: emptyArray.indexOf,
+      indexOf: emptyArray.indexOf
     };
 
     $.K.prototype = $.knife.K.prototype = $.fn
