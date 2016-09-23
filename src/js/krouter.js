@@ -122,7 +122,6 @@ class Router {
   _routes = [];
 
   // start route config
-  _start = null;
   _splash = false;
   _go = false;
 
@@ -144,10 +143,8 @@ class Router {
    * 初始化并启动路由，监控url hash变化, 更改当前路由 为 指定 路由
    * @returns {Router}
    */
-  start(route) {
-    if (route)
-      this._start = route;
-    //else if (this._routes.length > 0)
+  start(url) {
+    // else if (this._routes.length > 0)
     //  this._start = this._routes[0];
 
     // why not `history.pushState`? see https://github.com/weui/weui/issues/26, Router in wechat webview
@@ -161,7 +158,7 @@ class Router {
 
       // const state = history.state || {};
       // this.to(hash, state._index <= this._index);
-      this.to(hash, oldHash);
+      this.routeTo(hash); //  , oldHash);
     }, false);
 
     /*
@@ -176,44 +173,52 @@ class Router {
     this._splash = true;
 
     // 当前页面刷新加载
-    if (route) {
-      if (getHash(location.href) === this._start.hash) // `#${url}`;
-        this.to(this._start.hash);
+    if (url) {
+      if (getHash(location.href) === url) // `#${url}`;
+        this.routeTo(url);
       else
-        setHash(this._start.hash);
+        setHash(url);
     } else
       $.fastLink();
+
+    // 方便全局访问
+    $.router = this;
 
     /*
      const hash = getHash(location.href);
      const route = this.getRoute(hash);
-     this.to(route ? hash : this._start);
+     this.route(route ? hash : this._start);
      */
     return this;
   }
 
+  back() {
+    history.back();
+  }
   /**
    * 导航并传递对象参数, hash 直接导航只能传字符参数,不能传对象参数
    * @param url
    * @param params 支持对象参数 {v: obj}
+   * @param refresh 是否刷新, true 则显示时 重新bind
    */
-  go(url, params) {
+  go(url, params, refresh) {
     this._go = false;
     const r = this.getRoute(url);
     if (r) {
       r.params = r.params || {};
       $.assign(r.params, params);
       this._go = true;
+      r._refresh = refresh;
     }
     location.hash = url;
   }
 
   /**
-   * to the specify url, 内部访问
+   * route to the specify url, 内部访问
    * @param {String} url
    * @returns {Router}
    */
-  to(url) {
+  routeTo(url) {
     const r = this.getRoute(url);
     if (r) {
       // 返回
@@ -315,9 +320,9 @@ class Router {
             r.bind(dv, r.params); //.call(dv);
 
           $.fastLink();
-        } else if (r.search !== r.lastSearch && r.bind) {// 参数变化, 重新 bind!
-          r.bind(dv, r.params); //.call(dv);
-          $.fastLink();
+        } else if ((r.search !== r.lastSearch || r._refresh) && r.bind) {// 参数变化, 重新 bind!
+          r.bind(dv, r.params); // .call(dv);
+          // $.fastLink();
         }
 
         // 动画
